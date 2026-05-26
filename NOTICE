@@ -1,0 +1,37 @@
+OGFlightTracker
+===============
+
+This project is a modified version of "its-a-plane-python" (also published as
+the "RGB Matrix Flight Tracker") by Colin Waddell:
+
+    Original work:   Copyright (C) Colin Waddell
+    Original source: https://github.com/ColinWaddell/its-a-plane-python
+    Project write-up: https://blog.colinwaddell.com/flight-tracker/
+
+The original work is licensed under the GNU General Public License v3.0.
+This modified version is distributed under the same license. A full copy of
+the license is included in the LICENSE file.
+
+Modifications in this version
+-----------------------------
+This was the early, Raspberry Pi based version of the FlightTrackerLED box. The
+changes layered on top of Colin's original project are:
+
+  * Added a local Flask settings dashboard (web_interface/) so the device can
+    be configured from a browser on the local network — location, tracking
+    zone, brightness, altitude/ground-speed filters, weather location,
+    timezone, time format, temperature units, and which plane-detail fields to
+    show.
+  * Added remote.it integration at the operating-system level (outside this
+    repository) so units could be reached for remote support over SSH.
+  * Switched live aircraft data to an authenticated (paid) Flightradar24 API
+    tier. The subscription token is read from config.py / the FR24_API_TOKEN
+    environment variable and is never committed (see utilities/fr24_client.py).
+  * Various scene, filtering, and aircraft-naming additions.
+
+No API keys, location data, device credentials, or other secrets are included
+in this repository. See config.py.example for the placeholders you must fill in
+locally.
+
+This legacy Raspberry Pi version is different from Mach 2, which is
+independently written.

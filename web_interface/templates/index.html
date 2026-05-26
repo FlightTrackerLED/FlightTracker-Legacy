@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Tracker Settings Pro</title>
+    <style>
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #0056b3;
+            margin-bottom: 20px;
+        }
+        /* make only the "Pro" part red */
+        .pro {
+            color: #d10000;  /* bright red accent */
+        }
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="range"],
+        textarea {
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            width: 100%;
+        }
+
+        input[type="range"] {
+            width: 100%;
+        }
+
+        button {
+            background-color: #0056b3;
+            color: white;
+            padding: 10px 15px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #003d80;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            color: #0056b3;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #ccc;
+            padding-bottom: 5px;
+        }
+
+        .slider-value {
+            font-weight: bold;
+            color: #333;
+            margin-top: -10px;
+            margin-bottom: 20px;
+        }
+
+        /* Added padding for form containers */
+        .form-container {
+            margin-bottom: 30px;
+        }
+
+        /* Pro tip text */
+        .pro-tip {
+            font-size: 0.9rem;
+            color: #007b00;
+            margin-bottom: 15px;
+        }
+
+        .pro-tip a {
+            color: #007b00;
+            text-decoration: none;
+        }
+
+        .pro-tip a:hover {
+            text-decoration: underline;
+        }
+
+        /* links below the title */
+        .section-links {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .section-links a {
+            display: inline-block;
+            background-color: #0056b3;
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: bold;
+            padding: 6px 14px;
+            border-radius: 20px;
+            margin: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .section-links a:hover {
+            background-color: #d10000;
+            transform: translateY(-2px);
+        }
+
+        .plane-field-option {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .plane-field-example {
+            color: #666;
+            font-size: 0.9rem;
+            font-weight: normal;
+        }
+
+        .plane-live-row {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: stretch;
+            max-width: 980px;
+            margin: 0 auto 30px;
+        }
+
+        .plane-live-row .form-container {
+            flex: 1 1 0;
+            margin: 0;
+        }
+
+        .live-mode-card {
+            border: 2px solid #d10000;
+            background: #fff7f7;
+        }
+
+        .live-mode-card .section-title {
+            color: #b00000;
+            border-bottom-color: #ffb3b3;
+        }
+
+        .live-mode-button {
+            background-color: #d10000;
+            font-weight: bold;
+        }
+
+        .live-mode-button:hover {
+            background-color: #990000;
+        }
+
+        .live-mode-status {
+            color: #b00000;
+            font-weight: bold;
+            margin: 0 0 10px;
+        }
+
+        .live-mode-active input:disabled,
+        .live-mode-active select:disabled,
+        .live-mode-active textarea:disabled,
+        .live-mode-active button:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 760px) {
+            .plane-live-row {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body data-live-mode-active="{% if live_mode.enabled %}1{% else %}0{% endif %}">
+    <h1>Flight Tracker Settings <span class="pro">Pro</span></h1>
+
+    <div class="section-links">
+    <a href="#brightness">Brightness</a>
+    <a href="#altitude">Altitude</a>
+    <a href="#groundspeed">Ground Speed</a>
+    <a href="#weather">Weather</a>
+    <a href="#timezone">Timezone</a>
+    <a href="#plane-details">Plane Details</a>
+    <a href="#temp-units">Temperature</a>
+    <a href="#airport-code">Airport Code</a>
+    </div>
+
+    <!-- Form for entering home coordinates -->
+    <div class="form-container">
+        <h2 class="section-title">Enter Home Coordinates</h2>
+        <p class="pro-tip">Pro tip: Use <a href="https://geojson.io/" target="_blank">this website</a>, drop a pin on your location, and get the coordinates manually for precise flight tracking.</p>
+        <form method="POST">
+            <label for="latitude">Latitude:</label>
+            <input type="number" step="any" id="latitude" name="latitude" value="{{ current_location[0] }}">
+
+            <label for="longitude">Longitude:</label>
+            <input type="number" step="any" id="longitude" name="longitude" value="{{ current_location[1] }}">
+
+            <label for="altitude">Altitude (feet):</label>
+            <input type="number" step="any" id="altitude" name="altitude" value="{{ (current_location[2] / 0.0003048) | round(2) }}">
+            <button type="submit">Set Home Coordinates</button>
+        </form>
+    </div>
+
+    <!-- Timezone Selection -->
+    <div class="form-container">
+        <h2 class="section-title">Select Timezone</h2>
+        <form method="POST">
+            <label for="timezone">Timezone:</label>
+            <select id="timezone" name="timezone">
+                {% for tz in timezones %}
+                <option value="{{ tz }}" {% if tz == current_timezone %}selected{% endif %}>{{ tz }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Set Timezone</button>
+        </form>
+    </div>
+
+        <!-- Time Format -->
+    <div id="timezone" class="form-container">
+        <h2 class="section-title">Time Format</h2>
+        <form method="POST">
+            <label for="time_format_24h">Choose format:</label>
+            <select id="time_format_24h" name="time_format_24h">
+                <option value="true"  {% if time_format_24h %}selected{% endif %}>24-hour (e.g., 16:45)</option>
+                <option value="false" {% if not time_format_24h %}selected{% endif %}>12-hour (e.g., 4:45 PM)</option>
+            </select>
+            <button type="submit">Set Time Format</button>
+        </form>
+        <p class="pro-tip">Default is 12-hour; switch to 24-hour if you prefer.</p>
+    </div>
+
+
+    <!-- Boundary Box: Enter the top-left and bottom-right coordinates -->
+    <!-- Boundary Box: Enter the top-left and bottom-right coordinates -->
+    <div class="form-container">
+        <h2 class="section-title">Boundary Box</h2>
+        <p class="pro-tip">Pro tip: Use <a href="https://geojson.io/" target="_blank">this website</a>, go to your location, and click "Draw Rectangular Polygon" to get the boundary box coordinates. Make sure to copy the entire GeoJSON string, including the curly braces, and remove any extra pins or overlapping elements.</p>
+        
+        <!-- GeoJSON input and Extract Coordinates button -->
+        <form id="geojson-form">
+            <label for="geojson">Paste GeoJSON here:</label>
+            <textarea id="geojson" name="geojson" rows="10" placeholder='Paste your GeoJSON here'></textarea>
+            <button type="button" onclick="processGeoJSON()">Extract Coordinates</button>
+            <p style="font-size: 0.9rem; color: #ff6600;">Note: Extracting coordinates only updates the fields below. You must click "Set Boundary Box" to apply the changes to the tracker.</p>
+        </form>
+
+        <!-- Form to submit the extracted coordinates -->
+        <form method="POST">
+            <label for="tl_y">Top-Left Latitude:</label>
+            <input type="number" step="any" id="tl_y" name="tl_y" value="{{ zone_home['tl_y'] }}">
+
+            <label for="tl_x">Top-Left Longitude:</label>
+            <input type="number" step="any" id="tl_x" name="tl_x" value="{{ zone_home['tl_x'] }}">
+
+            <label for="br_y">Bottom-Right Latitude:</label>
+            <input type="number" step="any" id="br_y" name="br_y" value="{{ zone_home['br_y'] }}">
+
+            <label for="br_x">Bottom-Right Longitude:</label>
+            <input type="number" step="any" id="br_x" name="br_x" value="{{ zone_home['br_x'] }}">
+            <button type="submit">Set Boundary Box</button>
+        </form>
+    </div>
+
+    <!-- Min and Max Ceiling Configuration -->
+    <div id="altitude" class="form-container">
+        <h2 class="section-title">Configure Min and Max Ceiling (Altitude)</h2>
+        <p>Use this section to set the minimum and maximum ceiling for tracking flights. The values are in feet.</p>
+
+        <!-- Form for setting Min and Max Ceiling -->
+        <form method="POST">
+            <label for="min_altitude">Minimum Altitude (feet):</label>
+            <input type="number" step="any" id="min_altitude" name="min_altitude" value="{{ min_altitude }}">
+
+            <label for="max_altitude">Maximum Altitude (feet):</label>
+            <input type="number" step="any" id="max_altitude" name="max_altitude" value="{{ max_altitude }}">
+            
+            <button type="submit">Set Min and Max Ceiling</button>
+        </form>
+    </div>
+
+        <!-- Ground Speed Filter (kts) -->
+    <div id="groundspeed" class="form-container">
+    <h2 class="section-title">Ground Speed Filter (kts)</h2>
+    <p class="pro-tip">Uses raw API units (knots). Check “None” to disable a bound.</p>
+
+    <form method="POST">
+        <!-- MIN -->
+        <label for="min_groundspeed">Minimum Ground Speed</label>
+        <input
+        type="range"
+        id="min_groundspeed"
+        name="min_groundspeed"
+        min="0"
+        max="800"
+        step="1"
+        value="{{ min_groundspeed if min_groundspeed is not none else 0 }}"
+        {% if min_groundspeed is none %}disabled{% endif %}
+        oninput="document.getElementById('min_gs_val').innerText=this.value"
+        >
+        <div class="slider-value">
+        Min: <span id="min_gs_val">{{ min_groundspeed if min_groundspeed is not none else 'None' }}</span>
+        </div>
+        <label>
+        <input type="checkbox" id="min_gs_none" name="min_gs_none"
+            {% if min_groundspeed is none %}checked{% endif %}
+            onchange="toggleMinGS(this.checked)">
+        None (no minimum)
+        </label>
+
+        <hr>
+
+        <!-- MAX -->
+        <label for="max_groundspeed">Maximum Ground Speed</label>
+        <input
+        type="range"
+        id="max_groundspeed"
+        name="max_groundspeed"
+        min="0"
+        max="800"
+        step="1"
+        value="{{ max_groundspeed if max_groundspeed is not none else 800 }}"
+        {% if max_groundspeed is none %}disabled{% endif %}
+        oninput="document.getElementById('max_gs_val').innerText=this.value"
+        >
+        <div class="slider-value">
+        Max: <span id="max_gs_val">{{ max_groundspeed if max_groundspeed is not none else 'None' }}</span>
+        </div>
+        <label>
+        <input type="checkbox" id="max_gs_none" name="max_gs_none"
+            {% if max_groundspeed is none %}checked{% endif %}
+            onchange="toggleMaxGS(this.checked)">
+        None (no maximum)
+        </label>
+
+        <button type="submit">Set Ground Speed Filter</button>
+    </form>
+    </div>
+
+
+    <!-- Brightness slider -->
+    <div id="brightness" class="form-container">
+
+        <h2 class="section-title">Adjust Brightness</h2>
+        <form method="POST">
+            <label for="brightness">Brightness:</label>
+            <input type="range" id="brightness" name="brightness" min="0" max="100" value="{{ brightness }}">
+            <p class="slider-value">Current Brightness: {{ brightness }}</p>
+            <button type="submit">Set Brightness</button>
+        </form>
+    </div>
+
+
+    
+    <!-- Weather Location -->
+    <div id="weather" class="form-container">
+        <h2 class="section-title">Weather Location</h2>
+        <p style="font-size: 0.9rem;">Detected Weather Location: <strong>{{ weather_location }}</strong></p>
+        <form method="POST">
+            <label for="weather_location">Enter Weather Location (City Name):</label>
+            <input type="text" id="weather_location" name="weather_location" value="{{ weather_location }}">
+            <button type="submit">Set Weather Location</button>
+        </form>
+        <!-- Additional note in "pro tip" style -->
+        <p class="pro-tip" style="color: #007b00;">If weather is displaying incorrectly, try the nearest "Big" city.</p>
+    </div>
+
+    <div class="plane-live-row">
+        <!-- Plane Details (LED) -->
+    <div id="plane-details" class="form-container">
+      <h2 class="section-title">Plane Details</h2>
+      <form method="POST">
+        <!-- marker so app.py knows which form posted -->
+        <input type="hidden" name="plane_fields_form" value="1">
+
+        <label class="plane-field-option"><input type="checkbox" name="plane_fields" value="plane" data-plane-name-option="short"
+          {% if 'plane' in selected_plane_fields %}checked{% endif %}> Plane model/name <span class="plane-field-example">Example: {{ plane_field_examples['plane'] }}</span></label>
+
+        <label class="plane-field-option"><input type="checkbox" name="plane_fields" value="plane_full_name" data-plane-name-option="full"
+          {% if 'plane_full_name' in selected_plane_fields %}checked{% endif %}> Aircraft full name <span class="plane-field-example">Example: {{ plane_field_examples['plane_full_name'] }}</span></label>
+
+        <label class="plane-field-option"><input type="checkbox" name="plane_fields" value="route"
+          {% if 'route' in selected_plane_fields %}checked{% endif %}> Route (Origin→Destination) <span class="plane-field-example">Example: {{ plane_field_examples['route'] }}</span></label>
+
+        <label class="plane-field-option"><input type="checkbox" name="plane_fields" value="callsign"
+          {% if 'callsign' in selected_plane_fields %}checked{% endif %}> Callsign <span class="plane-field-example">Example: {{ plane_field_examples['callsign'] }}</span></label>
+
+        <label class="plane-field-option"><input type="checkbox" name="plane_fields" value="airline"
+          {% if 'airline' in selected_plane_fields %}checked{% endif %}> Airline <span class="plane-field-example">Example: {{ plane_field_examples['airline'] }}</span></label>
+
+        <label class="plane-field-option"><input type="checkbox" name="plane_fields" value="altitude"
+          {% if 'altitude' in selected_plane_fields %}checked{% endif %}> Altitude (ft) <span class="plane-field-example">Example: {{ plane_field_examples['altitude'] }}</span></label>
+
+        <label class="plane-field-option"><input type="checkbox" name="plane_fields" value="ground_speed"
+          {% if 'ground_speed' in selected_plane_fields %}checked{% endif %}> Ground speed (kts) <span class="plane-field-example">Example: {{ plane_field_examples['ground_speed'] }}</span></label>
+
+        <label class="plane-field-option"><input type="checkbox" name="plane_fields" value="heading"
+          {% if 'heading' in selected_plane_fields %}checked{% endif %}> Heading (°) <span class="plane-field-example">Example: {{ plane_field_examples['heading'] }}</span></label>
+
+        <label class="plane-field-option"><input type="checkbox" name="plane_fields" value="vertical_speed"
+          {% if 'vertical_speed' in selected_plane_fields %}checked{% endif %}> Vertical speed (fpm) <span class="plane-field-example">Example: {{ plane_field_examples['vertical_speed'] }}</span></label>
+
+        <!-- <label><input type="checkbox" name="plane_fields" value="squawk"
+          {% if 'squawk' in selected_plane_fields %}checked{% endif %}> Squawk</label> -->
+
+        <button type="submit">Save Plane Details</button>
+      </form>
+      <p class="pro-tip">Changes appear on the LED within ~1s (no restart needed).</p>
+    </div>
+
+    <div id="live-mode" class="form-container live-mode-card">
+      <h2 class="section-title">Live Mode</h2>
+      {% if live_mode.enabled %}
+      <p class="live-mode-status">Armed. The display will lock one detected plane and return automatically.</p>
+      {% elif live_mode.cooldown_remaining %}
+      <p class="live-mode-status">Cooling down. Try again in about {{ live_mode.cooldown_minutes }} minute{% if live_mode.cooldown_minutes != 1 %}s{% endif %}.</p>
+      {% else %}
+      <p class="live-mode-status">Experimental speed and altitude panel.</p>
+      {% endif %}
+      <form method="POST">
+        <input class="live-mode-control" type="hidden" name="live_mode_action" value="{% if live_mode.enabled %}stop{% else %}start{% endif %}">
+        <button class="live-mode-button live-mode-control" type="submit" {% if live_mode.cooldown_remaining and not live_mode.enabled %}disabled{% endif %}>{% if live_mode.enabled %}Stop Live Mode{% else %}Live Mode{% endif %}</button>
+      </form>
+      <p class="pro-tip">Locks one visible plane, refreshes every 2 seconds, smooths the numbers, auto-stops after 2 minutes, returns to normal tracking, then waits 10 minutes before you can start it again. It will not auto-start.</p>
+    </div>
+    </div>
+
+
+    <!-- 🔥 NEW: Temperature Units -->
+    <div id="temp-units" class="form-container">
+        <h2 class="section-title">Temperature Units</h2>
+        <form method="POST">
+            <label for="temperature_units">Choose units:</label>
+            <select id="temperature_units" name="temperature_units">
+                <option value="imperial" {% if temperature_units == "imperial" %}selected{% endif %}>Imperial (°F)</option>
+                <option value="metric" {% if temperature_units == "metric" %}selected{% endif %}>Metric (°C)</option>
+            </select>
+            <button type="submit">Set Temperature Units</button>
+        </form>
+        <p class="pro-tip">Tip: Imperial shows °F. Metric shows °C.</p>
+    </div>
+    
+
+
+
+<!-- Bold Airport Code Input -->
+<div id="airport-code" class="form-container">
+    <h2 class="section-title">Bold Airport Code</h2>
+    <p>This will bold the airport code on your display for all flights to and from the ICAO code.</p>
+
+    <!-- Form for setting the airport code -->
+    <form method="POST">
+        <input type="text" id="journey_code" name="journey_code" value="{{ journey_code }}">
+        <button type="submit">Set Airport Code</button>
+    </form>
+</div>
+
+
+    <!-- JavaScript to process GeoJSON -->
+    <!-- JavaScript to process GeoJSON -->
+    <script>
+        function processGeoJSON() {
+            try {
+                const geojsonText = document.getElementById('geojson').value;
+                const geojson = JSON.parse(geojsonText);
+
+                // Check for the rectangle in the GeoJSON and extract only the coordinates for the rectangle
+                const geometry = geojson.features[0].geometry;
+
+                // Ensure it's a Polygon
+                if (geometry.type === "Polygon") {
+                    const coordinates = geometry.coordinates[0];
+
+                    // We are assuming the coordinates are ordered: top-left, bottom-right, etc.
+                    const topLeft = coordinates[0]; // First point in Polygon
+                    const bottomRight = coordinates[2]; // Third point in Polygon
+
+                    // Assign the extracted values to the boundary box fields
+                    document.getElementById('tl_y').value = topLeft[1]; // Top-Left Latitude
+                    document.getElementById('tl_x').value = topLeft[0]; // Top-Left Longitude
+                    document.getElementById('br_y').value = bottomRight[1]; // Bottom-Right Latitude
+                    document.getElementById('br_x').value = bottomRight[0]; // Bottom-Right Longitude
+                } else {
+                    alert('The GeoJSON provided is not a Polygon. Please ensure you select a rectangular area.');
+                }
+            } catch (error) {
+                alert('Invalid GeoJSON format! Please ensure you pasted the entire GeoJSON and that it contains only a rectangular polygon.');
+                console.error(error);
+            }
+        }
+    </script>
+
+    <script>
+    function toggleMinGS(isNone) {
+        const slider = document.getElementById('min_groundspeed');
+        const val = document.getElementById('min_gs_val');
+        slider.disabled = isNone;
+        if (isNone) { val.innerText = 'None'; }
+        else { val.innerText = slider.value; }
+    }
+    function toggleMaxGS(isNone) {
+        const slider = document.getElementById('max_groundspeed');
+        const val = document.getElementById('max_gs_val');
+        slider.disabled = isNone;
+        if (isNone) { val.innerText = 'None'; }
+        else { val.innerText = slider.value; }
+    }
+
+    document.querySelectorAll('[data-plane-name-option]').forEach((checkbox) => {
+        checkbox.addEventListener('change', () => {
+            if (!checkbox.checked) {
+                return;
+            }
+            document.querySelectorAll('[data-plane-name-option]').forEach((other) => {
+                if (other !== checkbox) {
+                    other.checked = false;
+                }
+            });
+        });
+    });
+
+    if (document.body.dataset.liveModeActive === '1') {
+        document.querySelectorAll('input, select, textarea, button').forEach((control) => {
+            if (control.classList.contains('live-mode-control')) {
+                return;
+            }
+            control.disabled = true;
+        });
+        document.body.classList.add('live-mode-active');
+        window.setInterval(() => {
+            fetch('/api/live-mode', { cache: 'no-store' })
+                .then((response) => response.json())
+                .then((state) => {
+                    if (!state.enabled) {
+                        window.location.reload();
+                    }
+                })
+                .catch(() => {});
+        }, 1500);
+    }
+    </script>
+</body>
+</html>

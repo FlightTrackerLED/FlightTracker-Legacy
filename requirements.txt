@@ -1,0 +1,7 @@
+FlightRadarAPI
+requests
+geopy
+pytz
+Flask
+# rgbmatrix (hzeller/rpi-rgb-led-matrix) is installed separately on the Pi —
+# see the Adafruit RGB Matrix Bonnet guide linked in the README.

@@ -1,0 +1,28 @@
+# Secrets / per-device config — never commit
+config.py
+settings/
+keys/
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/

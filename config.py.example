@@ -1,0 +1,53 @@
+# Copy this file to config.py and fill in your own values.
+#   cp config.py.example config.py
+#
+# config.py is git-ignored and must never be committed — it holds your
+# location and API credentials.
+
+# Zone defining the home area for flight tracking (a small box around you).
+ZONE_HOME = {
+    "tl_y": 0.02,    # Top-Left Latitude (deg)
+    "tl_x": -0.02,   # Top-Left Longitude (deg)
+    "br_y": -0.02,   # Bottom-Right Latitude (deg)
+    "br_x": 0.02,    # Bottom-Right Longitude (deg)
+}
+
+# Home location, altitude in kilometers.
+LOCATION_HOME = [
+    0.0,    # Latitude (deg)
+    0.0,    # Longitude (deg)
+    0.0,    # Altitude (kilometers)
+]
+
+# --- Flightradar24 (paid API) ---
+# The production boxes used a paid Flightradar24 subscription. Paste your token
+# here, or set the FR24_API_TOKEN environment variable instead. Leave the
+# placeholder as-is to fall back to anonymous (rate-limited) feed access.
+FR24_API_TOKEN = "YOUR_FR24_API_TOKEN"
+
+# --- Weather (OpenWeather, optional) ---
+WEATHER_LOCATION = "Chicago"
+OPENWEATHER_API_KEY = "YOUR_OPENWEATHER_API_KEY"  # https://openweathermap.org/price
+TEMPERATURE_UNITS = "imperial"  # "imperial" or "metric"
+
+# Time display settings
+TIME_FORMAT_24H = False   # True = 24-hour; False = 12-hour (AM/PM)
+SHOW_PLANE_DETAILS = True
+
+# Display and hardware settings
+BRIGHTNESS = 66
+GPIO_SLOWDOWN = 3
+JOURNEY_CODE_SELECTED = "ORD"
+JOURNEY_BLANK_FILLER = " ? "
+HAT_PWM_ENABLED = True
+
+# Altitude limits for flight tracking (feet)
+MIN_ALTITUDE = 10
+MAX_ALTITUDE = 20000
+
+# Optional ground speed filter (API raw units — no conversion). None disables.
+MIN_GROUNDSPEED = None
+MAX_GROUNDSPEED = None
+
+# Timezone setting
+TIMEZONE = "US/Central"
